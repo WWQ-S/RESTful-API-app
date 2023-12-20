@@ -12,5 +12,5 @@ export declare class UserService {
             lastName: string;
         } & User;
     }>;
-    findOne(id: number): string;
+    findOne(email: string): Promise<User>;
 }

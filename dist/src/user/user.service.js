@@ -38,8 +38,12 @@ let UserService = class UserService {
         });
         return { user };
     }
-    findOne(id) {
-        return `This action returns a #${id} user`;
+    async findOne(email) {
+        return await this.usersRepository.findOne({
+            where: {
+                email,
+            },
+        });
     }
 };
 exports.UserService = UserService;
