@@ -7,4 +7,5 @@ export declare class AuthController {
         email: string;
         token: string;
     }>;
+    getProfile(req: any): any;
 }
