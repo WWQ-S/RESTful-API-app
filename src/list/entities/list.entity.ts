@@ -15,7 +15,7 @@ export class List {
   id: number
 
   @Column()
-  header: string
+  title: string
 
   @ManyToOne(() => User, (user) => user.list_id)
   user_id: User

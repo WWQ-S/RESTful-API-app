@@ -17,60 +17,72 @@ const common_1 = require("@nestjs/common");
 const list_service_1 = require("./list.service");
 const create_list_dto_1 = require("./dto/create-list.dto");
 const update_list_dto_1 = require("./dto/update-list.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let ListController = class ListController {
-    constructor(columnService) {
-        this.columnService = columnService;
+    constructor(listService) {
+        this.listService = listService;
     }
-    create(createColumnDto) {
-        return this.columnService.create(createColumnDto);
+    create(createListDto, req) {
+        return this.listService.create(createListDto, +req.user.id);
     }
-    findAll() {
-        return this.columnService.findAll();
+    findAll(req) {
+        return this.listService.findAll(+req.user.id);
     }
-    findOne(id) {
-        return this.columnService.findOne(+id);
+    findOne(id, req) {
+        return this.listService.findOne(+id, +req.user.id);
     }
-    update(id, updateColumnDto) {
-        return this.columnService.update(+id, updateColumnDto);
+    update(id, updateListDto, req) {
+        return this.listService.update(+id, updateListDto, +req.user.id);
     }
-    remove(id) {
-        return this.columnService.remove(+id);
+    remove(id, req) {
+        return this.listService.remove(+id, +req.user.id);
     }
 };
 exports.ListController = ListController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('create'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_list_dto_1.CreateListDto]),
+    __metadata("design:paramtypes", [create_list_dto_1.CreateListDto, Object]),
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('find'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_list_dto_1.UpdateListDto]),
+    __metadata("design:paramtypes", [String, update_list_dto_1.UpdateListDto, Object]),
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "remove", null);
 exports.ListController = ListController = __decorate([
