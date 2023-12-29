@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm'
+import { Card } from 'src/card/entities/card.entity'
 
 @Entity()
 export class User {
@@ -26,9 +27,11 @@ export class User {
   password: string
 
   @OneToMany(() => List, (list) => list.user_id)
-  //@JoinColumn({ name: 'user_idDEWQ' })
   list_id: List[]
 
   @OneToMany(() => Comment, (comment) => comment.user_id)
   comment_id: Comment[]
+
+  @OneToMany(() => Card, (card) => card.user_id)
+  card_id: Card[]
 }

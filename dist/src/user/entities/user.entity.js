@@ -13,6 +13,7 @@ exports.User = void 0;
 const list_entity_1 = require("../../list/entities/list.entity");
 const comment_entity_1 = require("../../comment/entities/comment.entity");
 const typeorm_1 = require("typeorm");
+const card_entity_1 = require("../../card/entities/card.entity");
 let User = class User {
 };
 exports.User = User;
@@ -44,6 +45,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.user_id),
     __metadata("design:type", Array)
 ], User.prototype, "comment_id", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => card_entity_1.Card, (card) => card.user_id),
+    __metadata("design:type", Array)
+], User.prototype, "card_id", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);
