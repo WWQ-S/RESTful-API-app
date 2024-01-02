@@ -35,6 +35,9 @@ export class CardService {
       relations: {
         user_id: true,
         list_id: true,
+        comment_id: {
+          user_id: true,
+        },
       },
       select: {
         user_id: {
@@ -44,6 +47,12 @@ export class CardService {
         list_id: {
           id: true,
           title: true,
+        },
+        comment_id: {
+          body: true,
+          user_id: {
+            firstName: true,
+          },
         },
       },
     })
@@ -71,6 +80,7 @@ export class CardService {
       relations: {
         user_id: true,
         list_id: true,
+        comment_id: true,
       },
       where: {
         id: id,
@@ -84,7 +94,7 @@ export class CardService {
         },
       },
     })
-    if (!card) throw new NotFoundException('Card not found')
+    if (!card) throw new NotFoundException('Card not found!')
     return card
   }
 }

@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  UsePipes,
+} from '@nestjs/common'
+import { CommentService } from './comment.service'
+import { CreateCommentDto } from './dto/create-comment.dto'
+import { UpdateCommentDto } from './dto/update-comment.dto'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard'
 
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  @Post('newComment')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(LocalAuthGuard)
+  create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
+    return this.commentService.create(createCommentDto, +req.user.id)
   }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
+  @Get('findComments')
+  @UseGuards(JwtAuthGuard)
+  findAll(@Req() req) {
+    return this.commentService.findAll(+req.user.id)
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  findOne(@Param('id') id: string, @Req() req) {
+    return this.commentService.findOne(+id, +req.user.id)
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @Req() req,
+  ) {
+    return this.commentService.update(+id, updateCommentDto, +req.user.id)
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') id: string, @Req() req) {
+    return this.commentService.remove(+id, +req.user.id)
   }
 }

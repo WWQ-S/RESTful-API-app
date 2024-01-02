@@ -40,6 +40,9 @@ let CardService = class CardService {
             relations: {
                 user_id: true,
                 list_id: true,
+                comment_id: {
+                    user_id: true,
+                },
             },
             select: {
                 user_id: {
@@ -49,6 +52,12 @@ let CardService = class CardService {
                 list_id: {
                     id: true,
                     title: true,
+                },
+                comment_id: {
+                    body: true,
+                    user_id: {
+                        firstName: true,
+                    },
                 },
             },
         });
@@ -72,6 +81,7 @@ let CardService = class CardService {
             relations: {
                 user_id: true,
                 list_id: true,
+                comment_id: true,
             },
             where: {
                 id: id,
@@ -86,7 +96,7 @@ let CardService = class CardService {
             },
         });
         if (!card)
-            throw new common_1.NotFoundException('Card not found');
+            throw new common_1.NotFoundException('Card not found!');
         return card;
     }
 };

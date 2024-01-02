@@ -5,28 +5,85 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentService = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
+const comment_entity_1 = require("./entities/comment.entity");
 let CommentService = class CommentService {
-    create(createCommentDto) {
-        return 'This action adds a new comment';
+    constructor(commentRepository) {
+        this.commentRepository = commentRepository;
     }
-    findAll() {
-        return `This action returns all comment`;
+    async create(createCommentDto, user_id) {
+        const newComment = {
+            body: createCommentDto.body,
+            card_id: createCommentDto.card_id,
+            user_id: { id: user_id },
+        };
+        if (!newComment)
+            throw new common_1.BadRequestException('Something went wrong!');
+        return await this.commentRepository.save(newComment);
     }
-    findOne(id) {
-        return `This action returns a #${id} comment`;
+    async findAll(user_id) {
+        const comment = await this.commentRepository.find({
+            where: {
+                user_id: { id: user_id },
+            },
+        });
+        return comment;
     }
-    update(id, updateCommentDto) {
-        return `This action updates a #${id} comment`;
+    async findOne(id, user_id) {
+        const comment = this.ifExist(id, user_id);
+        return comment;
     }
-    remove(id) {
-        return `This action removes a #${id} comment`;
+    async update(id, updateCommentDto, user_id) {
+        const comment = this.ifExist(id, user_id);
+        return await this.commentRepository.update(id, updateCommentDto);
+    }
+    async remove(id, user_id) {
+        const comment = this.ifExist(id, user_id);
+        await this.commentRepository.delete(id);
+        return `Comment "${(await comment).id}" has been deleted`;
+    }
+    async ifExist(id, user_id) {
+        const comment = await this.commentRepository.findOne({
+            relations: {
+                card_id: true,
+                user_id: true,
+            },
+            where: {
+                id: id,
+                user_id: {
+                    id: user_id,
+                },
+            },
+            select: {
+                user_id: {
+                    id: true,
+                    firstName: true,
+                },
+                card_id: {
+                    id: true,
+                    title: true,
+                },
+            },
+        });
+        if (!comment)
+            throw new common_1.NotFoundException('Comment not found');
+        return comment;
     }
 };
 exports.CommentService = CommentService;
 exports.CommentService = CommentService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_2.InjectRepository)(comment_entity_1.Comment)),
+    __metadata("design:paramtypes", [typeorm_1.Repository])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

@@ -23,7 +23,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Comment.prototype, "firstName", void 0);
+], Comment.prototype, "body", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => card_entity_1.Card, (card) => card.comment_id),
     __metadata("design:type", card_entity_1.Card)

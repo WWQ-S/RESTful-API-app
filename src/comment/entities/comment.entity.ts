@@ -8,7 +8,7 @@ export class Comment {
   id: number
 
   @Column()
-  firstName: string
+  body: string
 
   @ManyToOne(() => Card, (card) => card.comment_id)
   card_id: Card

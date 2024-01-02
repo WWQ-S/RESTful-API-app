@@ -17,60 +17,73 @@ const common_1 = require("@nestjs/common");
 const comment_service_1 = require("./comment.service");
 const create_comment_dto_1 = require("./dto/create-comment.dto");
 const update_comment_dto_1 = require("./dto/update-comment.dto");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const local_auth_guard_1 = require("../auth/guards/local-auth.guard");
 let CommentController = class CommentController {
     constructor(commentService) {
         this.commentService = commentService;
     }
-    create(createCommentDto) {
-        return this.commentService.create(createCommentDto);
+    create(createCommentDto, req) {
+        return this.commentService.create(createCommentDto, +req.user.id);
     }
-    findAll() {
-        return this.commentService.findAll();
+    findAll(req) {
+        return this.commentService.findAll(+req.user.id);
     }
-    findOne(id) {
-        return this.commentService.findOne(+id);
+    findOne(id, req) {
+        return this.commentService.findOne(+id, +req.user.id);
     }
-    update(id, updateCommentDto) {
-        return this.commentService.update(+id, updateCommentDto);
+    update(id, updateCommentDto, req) {
+        return this.commentService.update(+id, updateCommentDto, +req.user.id);
     }
-    remove(id) {
-        return this.commentService.remove(+id);
+    remove(id, req) {
+        return this.commentService.remove(+id, +req.user.id);
     }
 };
 exports.CommentController = CommentController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('newComment'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UsePipes)(local_auth_guard_1.LocalAuthGuard),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto]),
+    __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('findComments'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_comment_dto_1.UpdateCommentDto]),
+    __metadata("design:paramtypes", [String, update_comment_dto_1.UpdateCommentDto, Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "remove", null);
 exports.CommentController = CommentController = __decorate([
