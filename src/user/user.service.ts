@@ -30,11 +30,37 @@ export class UserService {
     return { user }
   }
 
-  async findOne(email: string) {
-    return await this.usersRepository.findOne({
+  async findOne(id: number) {
+    const oneUser = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+    })
+    return oneUser
+  }
+
+  //async findAllUsers() {
+  //  return this.usersRepository
+  //}
+
+  async findUserForLogin(email: string) {
+    const oneUser = await this.usersRepository.findOne({
       where: {
         email,
       },
     })
+    return oneUser
+  }
+
+  async removeUser(id: number, user: User) {
+    if (id === user.id) await this.usersRepository.delete(id)
+    else return 'You are not owner of this account'
+    return `Your account "${user.email}" has been deleted`
+  }
+
+  async updateDataUser(id: number, updateUserDto: UpdateUserDto, user: User) {
+    if (id === user.id) await this.usersRepository.update(id, updateUserDto)
+    else return 'You are not owner of this account'
+    return `Your account "${user.email}" has been updated`
   }
 }

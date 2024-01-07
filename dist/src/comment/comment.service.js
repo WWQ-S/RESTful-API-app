@@ -17,19 +17,23 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 const comment_entity_1 = require("./entities/comment.entity");
+const card_service_1 = require("../card/card.service");
 let CommentService = class CommentService {
-    constructor(commentRepository) {
+    constructor(commentRepository, cardService) {
         this.commentRepository = commentRepository;
+        this.cardService = cardService;
     }
     async create(createCommentDto, user_id) {
-        const newComment = {
-            body: createCommentDto.body,
-            card_id: createCommentDto.card_id,
-            user_id: { id: user_id },
-        };
-        if (!newComment)
-            throw new common_1.BadRequestException('Something went wrong!');
-        return await this.commentRepository.save(newComment);
+        const existCard = this.cardService.findExistCard(+createCommentDto.card_id);
+        if (existCard) {
+            const newComment = {
+                body: createCommentDto.body,
+                card_id: createCommentDto.card_id,
+                user_id: { id: user_id },
+            };
+            return await this.commentRepository.save(newComment);
+        }
+        throw new common_1.NotFoundException('Card not found!');
     }
     async findAll(user_id) {
         const comment = await this.commentRepository.find({
@@ -84,6 +88,7 @@ exports.CommentService = CommentService;
 exports.CommentService = CommentService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(comment_entity_1.Comment)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __metadata("design:paramtypes", [typeorm_1.Repository,
+        card_service_1.CardService])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

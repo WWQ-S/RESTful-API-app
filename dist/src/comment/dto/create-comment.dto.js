@@ -10,16 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCommentDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const card_entity_1 = require("../../card/entities/card.entity");
 class CreateCommentDto {
 }
 exports.CreateCommentDto = CreateCommentDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'card content text',
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "body", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'This field accepting id of existing card',
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", card_entity_1.Card)
 ], CreateCommentDto.prototype, "card_id", void 0);

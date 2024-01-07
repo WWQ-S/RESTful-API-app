@@ -18,6 +18,7 @@ const card_service_1 = require("./card.service");
 const create_card_dto_1 = require("./dto/create-card.dto");
 const update_card_dto_1 = require("./dto/update-card.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
 let CardController = class CardController {
     constructor(cardService) {
         this.cardService = cardService;
@@ -41,6 +42,8 @@ let CardController = class CardController {
 exports.CardController = CardController;
 __decorate([
     (0, common_1.Post)('newCard'),
+    (0, swagger_1.ApiCreatedResponse)({ description: 'Card created' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
@@ -51,6 +54,8 @@ __decorate([
 ], CardController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('findCards'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User cards received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -59,6 +64,9 @@ __decorate([
 ], CardController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User card received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Card not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -68,6 +76,9 @@ __decorate([
 ], CardController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Card updated' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Card not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -78,6 +89,9 @@ __decorate([
 ], CardController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Card deleted' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Card not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -86,6 +100,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CardController.prototype, "remove", null);
 exports.CardController = CardController = __decorate([
+    (0, swagger_1.ApiTags)('Card'),
     (0, common_1.Controller)('card'),
     __metadata("design:paramtypes", [card_service_1.CardService])
 ], CardController);

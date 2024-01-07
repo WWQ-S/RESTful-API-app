@@ -8,23 +8,27 @@ import { UpdateCommentDto } from './dto/update-comment.dto'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Comment } from './entities/comment.entity'
+import { CardService } from 'src/card/card.service'
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
+    private cardService: CardService,
   ) {}
 
   async create(createCommentDto: CreateCommentDto, user_id: number) {
-    const newComment = {
-      body: createCommentDto.body,
-      card_id: createCommentDto.card_id,
-      user_id: { id: user_id },
+    const existCard = this.cardService.findExistCard(+createCommentDto.card_id)
+    if (existCard) {
+      const newComment = {
+        body: createCommentDto.body,
+        card_id: createCommentDto.card_id,
+        user_id: { id: user_id },
+      }
+      return await this.commentRepository.save(newComment)
     }
-    if (!newComment) throw new BadRequestException('Something went wrong!')
-
-    return await this.commentRepository.save(newComment)
+    throw new NotFoundException('Card not found!')
   }
 
   async findAll(user_id: number) {

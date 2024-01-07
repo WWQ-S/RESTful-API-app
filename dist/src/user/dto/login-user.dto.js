@@ -9,39 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateUserDto = void 0;
+exports.LoginUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-class CreateUserDto {
+class LoginUserDto {
 }
-exports.CreateUserDto = CreateUserDto;
+exports.LoginUserDto = LoginUserDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'E-mail address with validation',
     }),
-    (0, class_validator_1.IsEmail)(undefined, { message: 'Not a valid e-mail' }),
+    (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "email", void 0);
+], LoginUserDto.prototype, "email", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'Password for registration',
+        description: 'Password for login',
         minLength: 6,
     }),
     (0, class_validator_1.MinLength)(6, { message: 'Password are including 6 symbols or more' }),
     __metadata("design:type", String)
-], CreateUserDto.prototype, "password", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'Users firtsname is necessarily',
-    }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Firstname cannot be empty' }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "firstName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'Users lastsname is not necessarily',
-    }),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "lastName", void 0);
-//# sourceMappingURL=create-user.dto.js.map
+], LoginUserDto.prototype, "password", void 0);
+//# sourceMappingURL=login-user.dto.js.map

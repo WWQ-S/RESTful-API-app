@@ -12,7 +12,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findOne(email)
+    const user = await this.userService.findUserForLogin(email)
     const passwordIsMatch = await argon2.verify(user.password, password)
 
     if (user && passwordIsMatch) {

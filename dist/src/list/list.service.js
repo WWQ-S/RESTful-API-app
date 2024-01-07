@@ -63,6 +63,14 @@ let ListService = class ListService {
         const oneList = await this.ifExist(id, user_id);
         return oneList;
     }
+    async findExistList(id) {
+        const list = await this.listRepository.findOne({
+            where: { id },
+        });
+        if (!list)
+            return false;
+        return true;
+    }
     async update(id, updateListDto, user_id) {
         const list = await this.ifExist(id, user_id);
         return await this.listRepository.update(id, updateListDto);

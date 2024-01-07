@@ -20,6 +20,7 @@ exports.ListModule = ListModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([list_entity_1.List])],
         controllers: [list_controller_1.ListController],
         providers: [list_service_1.ListService],
+        exports: [list_service_1.ListService],
     })
 ], ListModule);
 //# sourceMappingURL=list.module.js.map

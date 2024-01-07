@@ -4,7 +4,7 @@ import { UpdateCardDto } from './dto/update-card.dto';
 export declare class CardController {
     private readonly cardService;
     constructor(cardService: CardService);
-    create(createCardDto: CreateCardDto, req: any): Promise<{
+    create(createCardDto: CreateCardDto, req: any): Promise<Error | ({
         title: string;
         body: string;
         list_id: {
@@ -13,7 +13,7 @@ export declare class CardController {
         user_id: {
             id: number;
         };
-    } & import("./entities/card.entity").Card>;
+    } & import("./entities/card.entity").Card)>;
     findAll(req: any): Promise<import("./entities/card.entity").Card[]>;
     findOne(id: string, req: any): Promise<import("./entities/card.entity").Card>;
     update(id: string, updateCardDto: UpdateCardDto, req: any): Promise<import("typeorm").UpdateResult>;

@@ -64,6 +64,15 @@ export class ListService {
     return oneList
   }
 
+  //This method are calling from 'cardService' class to verify that list existing
+  async findExistList(id: number) {
+    const list = await this.listRepository.findOne({
+      where: { id },
+    })
+    if (!list) return false
+    return true
+  }
+
   async update(id: number, updateListDto: UpdateListDto, user_id: number) {
     const list = await this.ifExist(id, user_id)
     return await this.listRepository.update(id, updateListDto)

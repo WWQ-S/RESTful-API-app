@@ -12,12 +12,13 @@ const comment_service_1 = require("./comment.service");
 const comment_controller_1 = require("./comment.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const comment_entity_1 = require("./entities/comment.entity");
+const card_module_1 = require("../card/card.module");
 let CommentModule = class CommentModule {
 };
 exports.CommentModule = CommentModule;
 exports.CommentModule = CommentModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([comment_entity_1.Comment])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([comment_entity_1.Comment]), card_module_1.CardModule],
         controllers: [comment_controller_1.CommentController],
         providers: [comment_service_1.CommentService],
     })

@@ -18,6 +18,7 @@ const list_service_1 = require("./list.service");
 const create_list_dto_1 = require("./dto/create-list.dto");
 const update_list_dto_1 = require("./dto/update-list.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
 let ListController = class ListController {
     constructor(listService) {
         this.listService = listService;
@@ -41,6 +42,8 @@ let ListController = class ListController {
 exports.ListController = ListController;
 __decorate([
     (0, common_1.Post)('create'),
+    (0, swagger_1.ApiOkResponse)({ description: 'List created' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
@@ -51,6 +54,8 @@ __decorate([
 ], ListController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('find'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Lists received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -59,6 +64,9 @@ __decorate([
 ], ListController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'List received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'List not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -68,6 +76,9 @@ __decorate([
 ], ListController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'List updated' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'List not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -78,6 +89,9 @@ __decorate([
 ], ListController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'List deleted' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'List not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -86,7 +100,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ListController.prototype, "remove", null);
 exports.ListController = ListController = __decorate([
-    (0, common_1.Controller)('column'),
+    (0, swagger_1.ApiTags)('List'),
+    (0, common_1.Controller)('list'),
     __metadata("design:paramtypes", [list_service_1.ListService])
 ], ListController);
 //# sourceMappingURL=list.controller.js.map

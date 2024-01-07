@@ -17,11 +17,13 @@ const common_1 = require("@nestjs/common");
 const local_auth_guard_1 = require("./guards/local-auth.guard");
 const auth_service_1 = require("./auth.service");
 const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
+const login_user_dto_1 = require("../user/dto/login-user.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(req) {
+    async login(LoginUserDto, req) {
         return this.authService.login(req.user);
     }
     getProfile(req) {
@@ -31,14 +33,19 @@ let AuthController = class AuthController {
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Success login' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Invalid credentials' }),
     (0, common_1.UseGuards)(local_auth_guard_1.LocalAuthGuard),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [login_user_dto_1.LoginUserDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Get)('profile'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -46,6 +53,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "getProfile", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('Authentication'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);

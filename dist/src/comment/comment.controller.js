@@ -19,6 +19,7 @@ const create_comment_dto_1 = require("./dto/create-comment.dto");
 const update_comment_dto_1 = require("./dto/update-comment.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const local_auth_guard_1 = require("../auth/guards/local-auth.guard");
+const swagger_1 = require("@nestjs/swagger");
 let CommentController = class CommentController {
     constructor(commentService) {
         this.commentService = commentService;
@@ -42,6 +43,8 @@ let CommentController = class CommentController {
 exports.CommentController = CommentController;
 __decorate([
     (0, common_1.Post)('newComment'),
+    (0, swagger_1.ApiCreatedResponse)({ description: 'Comment created' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(local_auth_guard_1.LocalAuthGuard),
     __param(0, (0, common_1.Body)()),
@@ -52,6 +55,8 @@ __decorate([
 ], CommentController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('findComments'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User comments received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -60,6 +65,13 @@ __decorate([
 ], CommentController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User comment received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Comment not found' }),
+    (0, swagger_1.ApiHeader)({
+        name: 'id',
+        description: 'id of comment',
+    }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -69,6 +81,9 @@ __decorate([
 ], CommentController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Comment updated' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Comment not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -79,6 +94,9 @@ __decorate([
 ], CommentController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOkResponse)({ description: 'Comment deleted' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'Comment not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
@@ -87,6 +105,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "remove", null);
 exports.CommentController = CommentController = __decorate([
+    (0, swagger_1.ApiTags)('Comment'),
     (0, common_1.Controller)('comment'),
     __metadata("design:paramtypes", [comment_service_1.CommentService])
 ], CommentController);

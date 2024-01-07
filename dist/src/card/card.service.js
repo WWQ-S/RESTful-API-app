@@ -17,19 +17,22 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const card_entity_1 = require("./entities/card.entity");
+const list_service_1 = require("../list/list.service");
 let CardService = class CardService {
-    constructor(cardRepository) {
+    constructor(cardRepository, listService) {
         this.cardRepository = cardRepository;
+        this.listService = listService;
     }
     async create(createCardDto, id) {
+        const existList = this.listService.findExistList(+createCardDto.list.id);
+        if (!existList)
+            return new Error('List not found!');
         const newCard = {
             title: createCardDto.title,
             body: createCardDto.body,
             list_id: { id: createCardDto.list.id },
             user_id: { id },
         };
-        if (!newCard)
-            throw new common_1.BadRequestException('Something went wrong!');
         return await this.cardRepository.save(newCard);
     }
     async findAll(id) {
@@ -66,6 +69,15 @@ let CardService = class CardService {
     async findOne(id, user_id) {
         const card = await this.ifExist(id, user_id);
         return card;
+    }
+    async findExistCard(id) {
+        const card = await this.cardRepository.findOne({
+            where: { id },
+        });
+        if (card)
+            return true;
+        else
+            return false;
     }
     async update(id, updateCardDto, user_id) {
         const card = await this.ifExist(id, user_id);
@@ -104,6 +116,7 @@ exports.CardService = CardService;
 exports.CardService = CardService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(card_entity_1.Card)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        list_service_1.ListService])
 ], CardService);
 //# sourceMappingURL=card.service.js.map

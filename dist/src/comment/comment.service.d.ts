@@ -2,9 +2,11 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
+import { CardService } from 'src/card/card.service';
 export declare class CommentService {
     private commentRepository;
-    constructor(commentRepository: Repository<Comment>);
+    private cardService;
+    constructor(commentRepository: Repository<Comment>, cardService: CardService);
     create(createCommentDto: CreateCommentDto, user_id: number): Promise<{
         body: string;
         card_id: import("../card/entities/card.entity").Card;

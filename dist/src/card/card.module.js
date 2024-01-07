@@ -12,14 +12,16 @@ const card_service_1 = require("./card.service");
 const card_controller_1 = require("./card.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const card_entity_1 = require("./entities/card.entity");
+const list_module_1 = require("../list/list.module");
 let CardModule = class CardModule {
 };
 exports.CardModule = CardModule;
 exports.CardModule = CardModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([card_entity_1.Card])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([card_entity_1.Card]), list_module_1.ListModule],
         controllers: [card_controller_1.CardController],
         providers: [card_service_1.CardService],
+        exports: [card_service_1.CardService],
     })
 ], CardModule);
 //# sourceMappingURL=card.module.js.map

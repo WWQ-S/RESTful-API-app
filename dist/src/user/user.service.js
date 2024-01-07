@@ -38,12 +38,35 @@ let UserService = class UserService {
         });
         return { user };
     }
-    async findOne(email) {
-        return await this.usersRepository.findOne({
+    async findOne(id) {
+        const oneUser = await this.usersRepository.findOne({
+            where: {
+                id,
+            },
+        });
+        return oneUser;
+    }
+    async findUserForLogin(email) {
+        const oneUser = await this.usersRepository.findOne({
             where: {
                 email,
             },
         });
+        return oneUser;
+    }
+    async removeUser(id, user) {
+        if (id === user.id)
+            await this.usersRepository.delete(id);
+        else
+            return 'You are not owner of this account';
+        return `Your account "${user.email}" has been deleted`;
+    }
+    async updateDataUser(id, updateUserDto, user) {
+        if (id === user.id)
+            await this.usersRepository.update(id, updateUserDto);
+        else
+            return 'You are not owner of this account';
+        return `Your account "${user.email}" has been updated`;
     }
 };
 exports.UserService = UserService;
