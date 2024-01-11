@@ -5,13 +5,12 @@ export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
     create(createUserDto: CreateUserDto): Promise<{
-        user: {
-            email: string;
-            password: string;
-            firstName: string;
-            lastName: string;
-        } & import("./entities/user.entity").User;
-    }>;
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+    } & import("./entities/user.entity").User>;
+    findAll(): Promise<import("./entities/user.entity").User[]>;
     findOne(id: number): Promise<import("./entities/user.entity").User>;
     delete(id: number, req: any): Promise<string>;
     update(id: number, updateUserDto: UpdateUserDto, req: any): Promise<string>;

@@ -3,6 +3,7 @@ import { User } from 'src/user/entities/user.entity';
 export declare class List {
     id: number;
     title: string;
-    user_id: User;
-    card_id: Card[];
+    userId: number;
+    user: User;
+    card: Card[];
 }

@@ -24,20 +24,40 @@ let CommentController = class CommentController {
     constructor(commentService) {
         this.commentService = commentService;
     }
-    create(createCommentDto, req) {
-        return this.commentService.create(createCommentDto, +req.user.id);
+    async create(createCommentDto, req) {
+        try {
+            return await this.commentService.create(createCommentDto, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Card with ID "${createCommentDto.cardId}" not found`);
+        }
     }
     findAll(req) {
         return this.commentService.findAll(+req.user.id);
     }
-    findOne(id, req) {
-        return this.commentService.findOne(+id, +req.user.id);
+    async findOne(id, req) {
+        try {
+            return await this.commentService.findOne(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Comment with ID '${id}' not found`);
+        }
     }
-    update(id, updateCommentDto, req) {
-        return this.commentService.update(+id, updateCommentDto, +req.user.id);
+    async update(id, updateCommentDto, req) {
+        try {
+            return await this.commentService.update(+id, updateCommentDto, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Comment with ID '${id}' not found`);
+        }
     }
-    remove(id, req) {
-        return this.commentService.remove(+id, +req.user.id);
+    async remove(id, req) {
+        try {
+            return await this.commentService.remove(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Comment with ID '${id}' not found`);
+        }
     }
 };
 exports.CommentController = CommentController;
@@ -51,7 +71,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CommentController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('findComments'),
@@ -68,16 +88,12 @@ __decorate([
     (0, swagger_1.ApiOkResponse)({ description: 'User comment received' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, swagger_1.ApiNotFoundResponse)({ description: 'Comment not found' }),
-    (0, swagger_1.ApiHeader)({
-        name: 'id',
-        description: 'id of comment',
-    }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CommentController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
@@ -90,7 +106,7 @@ __decorate([
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_comment_dto_1.UpdateCommentDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CommentController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
@@ -102,7 +118,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CommentController.prototype, "remove", null);
 exports.CommentController = CommentController = __decorate([
     (0, swagger_1.ApiTags)('Comment'),

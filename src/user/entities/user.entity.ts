@@ -1,37 +1,31 @@
-import { List } from 'src/list/entities/list.entity'
-import { Comment } from 'src/comment/entities/comment.entity'
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
-import { Card } from 'src/card/entities/card.entity'
+import { List } from 'src/list/entities/list.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Card } from 'src/card/entities/card.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn({ name: 'user_id' })
-  id: number
+  id: number;
 
   @Column()
-  firstName: string
+  firstName: string;
 
   @Column()
-  lastName: string | null
+  lastName: string | null;
 
   @Column()
-  email: string
+  email: string;
 
   @Column()
-  password: string
+  password: string;
 
-  @OneToMany(() => List, (list) => list.user_id)
-  list_id: List[]
+  @OneToMany(() => List, (list) => list.user)
+  lists: List[];
 
-  @OneToMany(() => Comment, (comment) => comment.user_id)
-  comment_id: Comment[]
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
-  @OneToMany(() => Card, (card) => card.user_id)
-  card_id: Card[]
+  @OneToMany(() => Card, (card) => card.user)
+  cards: Card[];
 }

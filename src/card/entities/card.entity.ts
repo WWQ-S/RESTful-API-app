@@ -1,31 +1,40 @@
-import { Comment } from 'src/comment/entities/comment.entity'
-import { List } from 'src/list/entities/list.entity'
-import { User } from 'src/user/entities/user.entity'
+import { IsInt } from 'class-validator';
+import { Comment } from 'src/comment/entities/comment.entity';
+import { List } from 'src/list/entities/list.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm'
+} from 'typeorm';
 
 @Entity()
 export class Card {
   @PrimaryGeneratedColumn({ name: 'card_id' })
-  id: number
-
-  @ManyToOne(() => List, (list) => list.card_id)
-  list_id: List
-
-  @ManyToOne(() => User, (user) => user.card_id)
-  user_id: User
-
-  @OneToMany(() => Comment, (comment) => comment.card_id)
-  comment_id: Comment[]
+  id: number;
 
   @Column()
-  title: string
+  title: string;
 
   @Column()
-  body: string
+  body: string;
+
+  @IsInt()
+  @Column()
+  listId: number;
+
+  @IsInt()
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => List, (list) => list.card, { onDelete: 'CASCADE' })
+  list: List;
+
+  @ManyToOne(() => User, (user) => user.cards, { onDelete: 'CASCADE' })
+  user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.card)
+  comments: Comment[];
 }

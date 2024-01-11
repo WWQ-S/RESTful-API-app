@@ -24,63 +24,62 @@ let CommentService = class CommentService {
         this.cardService = cardService;
     }
     async create(createCommentDto, user_id) {
-        const existCard = this.cardService.findExistCard(+createCommentDto.card_id);
+        const existCard = await this.cardService.findExistCard(createCommentDto.cardId);
         if (existCard) {
             const newComment = {
                 body: createCommentDto.body,
-                card_id: createCommentDto.card_id,
-                user_id: { id: user_id },
+                cardId: createCommentDto.cardId,
+                userId: user_id,
             };
             return await this.commentRepository.save(newComment);
         }
         throw new common_1.NotFoundException('Card not found!');
     }
-    async findAll(user_id) {
+    async findAll(userId) {
         const comment = await this.commentRepository.find({
             where: {
-                user_id: { id: user_id },
+                userId,
             },
         });
         return comment;
     }
-    async findOne(id, user_id) {
-        const comment = this.ifExist(id, user_id);
-        return comment;
+    async findOne(id, userId) {
+        return this.checkComment(id, userId);
     }
-    async update(id, updateCommentDto, user_id) {
-        const comment = this.ifExist(id, user_id);
+    async update(id, updateCommentDto, userId) {
+        const comment = this.checkComment(id, userId);
+        if (!comment)
+            throw new common_1.NotFoundException('Comment not found!');
         return await this.commentRepository.update(id, updateCommentDto);
     }
-    async remove(id, user_id) {
-        const comment = this.ifExist(id, user_id);
+    async remove(id, userId) {
+        const comment = await this.checkComment(id, userId);
+        if (!comment)
+            throw new common_1.NotFoundException('Comment not found!');
         await this.commentRepository.delete(id);
         return `Comment "${(await comment).id}" has been deleted`;
     }
-    async ifExist(id, user_id) {
-        const comment = await this.commentRepository.findOne({
+    async checkComment(id, userId) {
+        const comment = await this.commentRepository.findOneOrFail({
             relations: {
-                card_id: true,
-                user_id: true,
+                card: true,
+                user: true,
             },
             where: {
-                id: id,
-                user_id: {
-                    id: user_id,
-                },
+                id,
+                userId,
             },
             select: {
-                user_id: {
+                user: {
                     id: true,
                     firstName: true,
                 },
-                card_id: {
+                card: {
                     id: true,
                     title: true,
                 },
             },
         });
-        if (!comment)
-            throw new common_1.NotFoundException('Comment not found');
         return comment;
     }
 };

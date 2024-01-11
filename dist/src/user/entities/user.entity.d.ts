@@ -7,7 +7,7 @@ export declare class User {
     lastName: string | null;
     email: string;
     password: string;
-    list_id: List[];
-    comment_id: Comment[];
-    card_id: Card[];
+    lists: List[];
+    comments: Comment[];
+    cards: Card[];
 }

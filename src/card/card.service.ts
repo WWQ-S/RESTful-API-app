@@ -1,15 +1,10 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import { CreateCardDto } from './dto/create-card.dto'
-import { UpdateCardDto } from './dto/update-card.dto'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { Card } from './entities/card.entity'
-import { ListService } from 'src/list/list.service'
-import { error } from 'console'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCardDto } from './dto/create-card.dto';
+import { UpdateCardDto } from './dto/update-card.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Card } from './entities/card.entity';
+import { ListService } from 'src/list/list.service';
 
 @Injectable()
 export class CardService {
@@ -20,95 +15,98 @@ export class CardService {
   ) {}
 
   async create(createCardDto: CreateCardDto, id: number) {
-    const existList = this.listService.findExistList(+createCardDto.list.id)
-    if (!existList) return new Error('List not found!')
+    const IfExistList = await this.listService.findExistList(
+      +createCardDto.listId,
+    );
+
+    if (!IfExistList) return IfExistList;
 
     const newCard = {
       title: createCardDto.title,
       body: createCardDto.body,
-      list_id: { id: createCardDto.list.id },
-      user_id: { id },
-    }
-    return await this.cardRepository.save(newCard)
+      listId: createCardDto.listId,
+      userId: id,
+    };
+    return await this.cardRepository.save(newCard);
   }
 
-  async findAll(id: number) {
+  async findAll(userId: number) {
     const cards = await this.cardRepository.find({
       where: {
-        user_id: { id },
+        userId,
       },
       relations: {
-        user_id: true,
-        list_id: true,
-        comment_id: {
-          user_id: true,
+        user: true,
+        list: true,
+        comments: {
+          user: true,
         },
       },
       select: {
-        user_id: {
+        user: {
           firstName: true,
           lastName: true,
         },
-        list_id: {
+        list: {
           id: true,
           title: true,
         },
-        comment_id: {
+        comments: {
           body: true,
-          user_id: {
+          user: {
             firstName: true,
           },
         },
       },
-    })
-    return cards
+    });
+    return cards;
   }
 
-  async findOne(id: number, user_id: number) {
-    const card = await this.ifExist(id, user_id)
-    return card
+  async findOne(id: number, userId: number) {
+    return await this.checkCard(id, userId);
   }
 
   //This method are calling from 'commentService' class to verify that card existing
   async findExistCard(id: number) {
     const card = await this.cardRepository.findOne({
       where: { id },
-    })
-    if (card) return true
-    else return false
+    });
+    if (card) return true;
+    else return false;
   }
 
-  async update(id: number, updateCardDto: UpdateCardDto, user_id: number) {
-    const card = await this.ifExist(id, user_id)
-    return await this.cardRepository.update(id, updateCardDto)
+  async update(id: number, updateCardDto: UpdateCardDto, userId: number) {
+    const card = await this.checkCard(id, userId);
+    if (!card) throw new NotFoundException('Card not found!');
+    return await this.cardRepository.update(id, updateCardDto);
   }
 
-  async remove(id: number, user_id: number) {
-    const card = await this.ifExist(id, user_id)
-    await this.cardRepository.delete(id)
-    return `Card "${card.title}" has been deleted`
+  async remove(id: number, userId: number) {
+    const card = await this.checkCard(id, userId);
+    if (!card) throw new NotFoundException('Card not found!');
+    await this.cardRepository.delete(id);
+    return `Card "${card.title}" has been deleted`;
   }
 
-  async ifExist(id: number, user_id: number) {
-    const card = await this.cardRepository.findOne({
+  async checkCard(id: number, userId: number) {
+    const card = await this.cardRepository.findOneOrFail({
       relations: {
-        user_id: true,
-        list_id: true,
-        comment_id: true,
+        user: true,
+        list: true,
+        comments: true,
       },
       where: {
-        id: id,
-        user_id: {
-          id: user_id,
+        id,
+        user: {
+          id: userId,
         },
       },
       select: {
-        user_id: {
+        user: {
           id: true,
         },
       },
-    })
-    if (!card) throw new NotFoundException('Card not found!')
-    return card
+    });
+    return card;
   }
 }

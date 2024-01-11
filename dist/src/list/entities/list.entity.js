@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.List = void 0;
+const class_validator_1 = require("class-validator");
 const card_entity_1 = require("../../card/entities/card.entity");
 const user_entity_1 = require("../../user/entities/user.entity");
 const typeorm_1 = require("typeorm");
@@ -25,13 +26,19 @@ __decorate([
     __metadata("design:type", String)
 ], List.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.list_id),
-    __metadata("design:type", user_entity_1.User)
-], List.prototype, "user_id", void 0);
+    (0, class_validator_1.IsInt)(),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], List.prototype, "userId", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => card_entity_1.Card, (card) => card.list_id),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.lists, { onDelete: 'CASCADE' }),
+    __metadata("design:type", user_entity_1.User)
+], List.prototype, "user", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, typeorm_1.OneToMany)(() => card_entity_1.Card, (card) => card.list),
     __metadata("design:type", Array)
-], List.prototype, "card_id", void 0);
+], List.prototype, "card", void 0);
 exports.List = List = __decorate([
     (0, typeorm_1.Entity)()
 ], List);

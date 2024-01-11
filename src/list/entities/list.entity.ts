@@ -1,25 +1,30 @@
-import { Card } from 'src/card/entities/card.entity'
-import { User } from 'src/user/entities/user.entity'
+import { IsInt, IsNotEmpty } from 'class-validator';
+import { Card } from 'src/card/entities/card.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm'
+} from 'typeorm';
 
 @Entity()
 export class List {
   @PrimaryGeneratedColumn({ name: 'column_id' })
-  id: number
+  id: number;
 
   @Column()
-  title: string
+  title: string;
 
-  @ManyToOne(() => User, (user) => user.list_id)
-  user_id: User
+  @IsInt()
+  @Column()
+  userId: number;
 
-  @OneToMany(() => Card, (card) => card.list_id)
-  card_id: Card[]
+  @ManyToOne(() => User, (user) => user.lists, { onDelete: 'CASCADE' })
+  user: User;
+
+  @IsNotEmpty()
+  @OneToMany(() => Card, (card) => card.list)
+  card: Card[];
 }

@@ -10,17 +10,18 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
-} from '@nestjs/common'
-import { ListService } from './list.service'
-import { CreateListDto } from './dto/create-list.dto'
-import { UpdateListDto } from './dto/update-list.dto'
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+  NotFoundException,
+} from '@nestjs/common';
+import { ListService } from './list.service';
+import { CreateListDto } from './dto/create-list.dto';
+import { UpdateListDto } from './dto/update-list.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 
 @ApiTags('List')
 @Controller('list')
@@ -32,16 +33,25 @@ export class ListController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  create(@Body() createListDto: CreateListDto, @Req() req) {
-    return this.listService.create(createListDto, +req.user.id)
+  async create(@Body() createListDto: CreateListDto, @Req() req) {
+    try {
+      return await this.listService.create(createListDto, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `List '${createListDto.title}' already exist`,
+      );
+    }
   }
 
   @Get('find')
   @ApiOkResponse({ description: 'Lists received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
-  findAll(@Req() req) {
-    return this.listService.findAll(+req.user.id)
+  async findAll(@Req() req) {
+    const lists = await this.listService.findAll(+req.user.id);
+    if (lists.length === 0)
+      throw new NotFoundException('Your lists have not found');
+    return lists;
   }
 
   @Get(':id')
@@ -49,8 +59,12 @@ export class ListController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'List not found' })
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.listService.findOne(+id, +req.user.id)
+  async findOne(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.listService.findOne(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException('Your list have not found');
+    }
   }
 
   @Patch(':id')
@@ -58,12 +72,16 @@ export class ListController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'List not found' })
   @UseGuards(JwtAuthGuard)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateListDto: UpdateListDto,
     @Req() req,
   ) {
-    return this.listService.update(+id, updateListDto, +req.user.id)
+    try {
+      return await this.listService.update(+id, updateListDto, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(`List with ID ${id} not found`);
+    }
   }
 
   @Delete(':id')
@@ -71,7 +89,11 @@ export class ListController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'List not found' })
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string, @Req() req) {
-    return this.listService.remove(+id, +req.user.id)
+  async remove(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.listService.remove(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(`List with ID ${id} not found`);
+    }
   }
 }

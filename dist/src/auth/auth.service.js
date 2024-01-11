@@ -21,9 +21,10 @@ let AuthService = class AuthService {
     }
     async validateUser(email, password) {
         const user = await this.userService.findUserForLogin(email);
-        const passwordIsMatch = await argon2.verify(user.password, password);
-        if (user && passwordIsMatch) {
-            return user;
+        if (user) {
+            const passwordIsMatch = await argon2.verify(user.password, password);
+            if (passwordIsMatch)
+                return user;
         }
         throw new common_1.UnauthorizedException('Wrong email or password');
     }

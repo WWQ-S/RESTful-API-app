@@ -23,20 +23,43 @@ let ListController = class ListController {
     constructor(listService) {
         this.listService = listService;
     }
-    create(createListDto, req) {
-        return this.listService.create(createListDto, +req.user.id);
+    async create(createListDto, req) {
+        try {
+            return await this.listService.create(createListDto, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`List '${createListDto.title}' already exist`);
+        }
     }
-    findAll(req) {
-        return this.listService.findAll(+req.user.id);
+    async findAll(req) {
+        const lists = await this.listService.findAll(+req.user.id);
+        if (lists.length === 0)
+            throw new common_1.NotFoundException('Your lists have not found');
+        return lists;
     }
-    findOne(id, req) {
-        return this.listService.findOne(+id, +req.user.id);
+    async findOne(id, req) {
+        try {
+            return await this.listService.findOne(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException('Your list have not found');
+        }
     }
-    update(id, updateListDto, req) {
-        return this.listService.update(+id, updateListDto, +req.user.id);
+    async update(id, updateListDto, req) {
+        try {
+            return await this.listService.update(+id, updateListDto, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`List with ID ${id} not found`);
+        }
     }
-    remove(id, req) {
-        return this.listService.remove(+id, +req.user.id);
+    async remove(id, req) {
+        try {
+            return await this.listService.remove(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`List with ID ${id} not found`);
+        }
     }
 };
 exports.ListController = ListController;
@@ -50,7 +73,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_list_dto_1.CreateListDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ListController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('find'),
@@ -60,7 +83,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ListController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
@@ -72,7 +95,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ListController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
@@ -85,7 +108,7 @@ __decorate([
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_list_dto_1.UpdateListDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ListController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
@@ -97,7 +120,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ListController.prototype, "remove", null);
 exports.ListController = ListController = __decorate([
     (0, swagger_1.ApiTags)('List'),

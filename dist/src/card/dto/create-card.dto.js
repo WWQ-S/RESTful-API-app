@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCardDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-const list_entity_1 = require("../../list/entities/list.entity");
 class CreateCardDto {
 }
 exports.CreateCardDto = CreateCardDto;
@@ -34,7 +33,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'This field accepting id of existing list',
     }),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", list_entity_1.List)
-], CreateCardDto.prototype, "list", void 0);
+    (0, class_validator_1.IsInt)(),
+    __metadata("design:type", Number)
+], CreateCardDto.prototype, "listId", void 0);
 //# sourceMappingURL=create-card.dto.js.map

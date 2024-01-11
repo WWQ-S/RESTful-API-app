@@ -10,18 +10,19 @@ import {
   ValidationPipe,
   UseGuards,
   Req,
-} from '@nestjs/common'
-import { UserService } from './user.service'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+  NotFoundException,
+} from '@nestjs/common';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
-  ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 
 @ApiTags('User')
 @Controller('user')
@@ -53,29 +54,52 @@ export class UserController {
     },
   })
   @UsePipes(new ValidationPipe())
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto)
+  async create(@Body() createUserDto: CreateUserDto) {
+    try {
+      return await this.userService.create(createUserDto);
+    } catch (error) {
+      throw new NotFoundException(`This email address is already registered`);
+    }
+  }
+
+  @Get('findAll')
+  @ApiOkResponse({ description: 'User received' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(JwtAuthGuard)
+  findAll() {
+    return this.userService.findAll();
   }
 
   @Get(':id')
   @ApiOkResponse({ description: 'User received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: number) {
-    return this.userService.findOne(+id)
+  async findOne(@Param('id') id: number) {
+    try {
+      return await this.userService.findOne(id);
+    } catch (error) {
+      throw new NotFoundException(`User with ID '${id}' not found`);
+    }
   }
 
   @Delete(':id')
   @ApiOkResponse({ description: 'User deleted' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   @UseGuards(JwtAuthGuard)
-  delete(@Param('id') id: number, @Req() req) {
-    return this.userService.removeUser(+id, req.user)
+  async delete(@Param('id') id: number, @Req() req) {
+    try {
+      return await this.userService.removeUser(id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(`User with ID '${id}' not found`);
+    }
   }
 
   @Patch(':id')
   @ApiOkResponse({ description: 'User upadated' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   @ApiResponse({
     status: 400,
     schema: {
@@ -104,6 +128,6 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Req() req,
   ) {
-    return this.userService.updateDataUser(+id, updateUserDto, req.user)
+    return this.userService.updateDataUser(+id, updateUserDto, req.user);
   }
 }

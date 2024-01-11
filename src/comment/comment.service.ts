@@ -1,14 +1,10 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import { CreateCommentDto } from './dto/create-comment.dto'
-import { UpdateCommentDto } from './dto/update-comment.dto'
-import { Repository } from 'typeorm'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Comment } from './entities/comment.entity'
-import { CardService } from 'src/card/card.service'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Comment } from './entities/comment.entity';
+import { CardService } from 'src/card/card.service';
 
 @Injectable()
 export class CommentService {
@@ -19,71 +15,67 @@ export class CommentService {
   ) {}
 
   async create(createCommentDto: CreateCommentDto, user_id: number) {
-    const existCard = this.cardService.findExistCard(+createCommentDto.card_id)
+    const existCard = await this.cardService.findExistCard(
+      createCommentDto.cardId,
+    );
     if (existCard) {
       const newComment = {
         body: createCommentDto.body,
-        card_id: createCommentDto.card_id,
-        user_id: { id: user_id },
-      }
-      return await this.commentRepository.save(newComment)
+        cardId: createCommentDto.cardId,
+        userId: user_id,
+      };
+      return await this.commentRepository.save(newComment);
     }
-    throw new NotFoundException('Card not found!')
+    throw new NotFoundException('Card not found!');
   }
 
-  async findAll(user_id: number) {
+  async findAll(userId: number) {
     const comment = await this.commentRepository.find({
       where: {
-        user_id: { id: user_id },
+        userId,
       },
-    })
-    return comment
+    });
+    return comment;
   }
 
-  async findOne(id: number, user_id: number) {
-    const comment = this.ifExist(id, user_id)
-    return comment
+  async findOne(id: number, userId: number) {
+    return this.checkComment(id, userId);
   }
 
-  async update(
-    id: number,
-    updateCommentDto: UpdateCommentDto,
-    user_id: number,
-  ) {
-    const comment = this.ifExist(id, user_id)
-    return await this.commentRepository.update(id, updateCommentDto)
+  async update(id: number, updateCommentDto: UpdateCommentDto, userId: number) {
+    const comment = this.checkComment(id, userId);
+    if (!comment) throw new NotFoundException('Comment not found!');
+    return await this.commentRepository.update(id, updateCommentDto);
   }
 
-  async remove(id: number, user_id: number) {
-    const comment = this.ifExist(id, user_id)
-    await this.commentRepository.delete(id)
-    return `Comment "${(await comment).id}" has been deleted`
+  async remove(id: number, userId: number) {
+    const comment = await this.checkComment(id, userId);
+    if (!comment) throw new NotFoundException('Comment not found!');
+    await this.commentRepository.delete(id);
+    return `Comment "${(await comment).id}" has been deleted`;
   }
 
-  async ifExist(id: number, user_id: number) {
-    const comment = await this.commentRepository.findOne({
+  async checkComment(id: number, userId: number) {
+    const comment = await this.commentRepository.findOneOrFail({
       relations: {
-        card_id: true,
-        user_id: true,
+        card: true,
+        user: true,
       },
       where: {
-        id: id,
-        user_id: {
-          id: user_id,
-        },
+        id,
+        userId,
       },
       select: {
-        user_id: {
+        user: {
           id: true,
           firstName: true,
         },
-        card_id: {
+        card: {
           id: true,
           title: true,
         },
       },
-    })
-    if (!comment) throw new NotFoundException('Comment not found')
-    return comment
+    });
+    return comment;
   }
 }

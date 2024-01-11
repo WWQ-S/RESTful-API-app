@@ -22,84 +22,82 @@ let ListService = class ListService {
         this.listRepository = listRepository;
     }
     async create(createListDto, id) {
-        const ifExist = await this.listRepository.findBy({
-            user_id: { id },
-            title: createListDto.title,
+        const checkList = await this.listRepository.findOne({
+            where: {
+                userId: id,
+                title: createListDto.title,
+            },
         });
-        if (ifExist.length) {
+        if (checkList) {
             throw new common_1.BadRequestException('This list already exist');
         }
-        const newList = await this.listRepository.save({
+        await this.listRepository.save({
             title: createListDto.title,
-            user_id: { id },
+            userId: id,
         });
-        const list = await this.listRepository.findOne({
+        return await this.listRepository.findOne({
             where: { title: createListDto.title },
             relations: {
-                user_id: true,
+                user: true,
             },
         });
-        return list;
     }
-    async findAll(id) {
-        const findLists = await this.listRepository.find({
+    async findAll(userId) {
+        return await this.listRepository.find({
             where: {
-                user_id: { id },
+                userId,
             },
             relations: {
-                card_id: true,
-                user_id: true,
+                card: true,
+                user: true,
             },
             select: {
-                user_id: {
+                user: {
                     id: true,
                     firstName: true,
                 },
             },
         });
-        return findLists;
     }
-    async findOne(id, user_id) {
-        const oneList = await this.ifExist(id, user_id);
-        return oneList;
+    async findOne(id, userId) {
+        return await this.checkList(id, userId);
     }
     async findExistList(id) {
-        const list = await this.listRepository.findOne({
+        return await this.listRepository.findOneOrFail({
             where: { id },
         });
-        if (!list)
-            return false;
-        return true;
     }
-    async update(id, updateListDto, user_id) {
-        const list = await this.ifExist(id, user_id);
+    async update(id, updateListDto, userId) {
+        const list = await this.checkList(id, userId);
+        if (!list)
+            throw new common_1.NotFoundException('List not found');
         return await this.listRepository.update(id, updateListDto);
     }
-    async remove(id, user_id) {
-        const list = await this.ifExist(id, user_id);
-        const delList = await this.listRepository.delete(id);
+    async remove(id, userId) {
+        const list = await this.checkList(id, userId);
+        if (!list)
+            throw new common_1.NotFoundException('List not found');
+        await this.listRepository.delete(id);
         return `List "${list.title}" has been deleted`;
     }
-    async ifExist(id, user_id) {
-        const list = await this.listRepository.findOne({
+    async checkList(id, userId) {
+        const list = await this.listRepository.findOneOrFail({
             relations: {
-                user_id: true,
-                card_id: true,
+                user: true,
+                card: true,
             },
             where: {
-                id: id,
-                user_id: {
-                    id: user_id,
+                id,
+                user: {
+                    id: userId,
                 },
             },
             select: {
-                user_id: {
+                user: {
                     id: true,
                 },
             },
         });
-        if (!list)
-            throw new common_1.NotFoundException('List not found');
         return list;
     }
 };

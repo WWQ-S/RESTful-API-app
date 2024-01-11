@@ -23,20 +23,40 @@ let CardController = class CardController {
     constructor(cardService) {
         this.cardService = cardService;
     }
-    create(createCardDto, req) {
-        return this.cardService.create(createCardDto, +req.user.id);
+    async create(createCardDto, req) {
+        try {
+            return await this.cardService.create(createCardDto, req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`List with ID '${createCardDto.listId}' not found`);
+        }
     }
     findAll(req) {
         return this.cardService.findAll(+req.user.id);
     }
-    findOne(id, req) {
-        return this.cardService.findOne(+id, +req.user.id);
+    async findOne(id, req) {
+        try {
+            return await this.cardService.findOne(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Card with ID '${id}' not found in yours cards`);
+        }
     }
-    update(id, updateCardDto, req) {
-        return this.cardService.update(+id, updateCardDto, +req.user.id);
+    async update(id, updateCardDto, req) {
+        try {
+            return await this.cardService.update(+id, updateCardDto, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Card with ID '${id}' not found in yours cards`);
+        }
     }
-    remove(id, req) {
-        return this.cardService.remove(+id, +req.user.id);
+    async remove(id, req) {
+        try {
+            return await this.cardService.remove(+id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Card with ID '${id}' not found in yours cards`);
+        }
     }
 };
 exports.CardController = CardController;
@@ -50,7 +70,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_card_dto_1.CreateCardDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CardController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('findCards'),
@@ -72,7 +92,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CardController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
@@ -85,7 +105,7 @@ __decorate([
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_card_dto_1.UpdateCardDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CardController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
@@ -97,7 +117,7 @@ __decorate([
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CardController.prototype, "remove", null);
 exports.CardController = CardController = __decorate([
     (0, swagger_1.ApiTags)('Card'),

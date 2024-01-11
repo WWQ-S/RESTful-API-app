@@ -11,18 +11,18 @@ import {
   UseGuards,
   Req,
   NotFoundException,
-} from '@nestjs/common'
-import { CardService } from './card.service'
-import { CreateCardDto } from './dto/create-card.dto'
-import { UpdateCardDto } from './dto/update-card.dto'
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+} from '@nestjs/common';
+import { CardService } from './card.service';
+import { CreateCardDto } from './dto/create-card.dto';
+import { UpdateCardDto } from './dto/update-card.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 
 @ApiTags('Card')
 @Controller('card')
@@ -34,8 +34,14 @@ export class CardController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
-  create(@Body() createCardDto: CreateCardDto, @Req() req) {
-    return this.cardService.create(createCardDto, +req.user.id)
+  async create(@Body() createCardDto: CreateCardDto, @Req() req) {
+    try {
+      return await this.cardService.create(createCardDto, req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `List with ID '${createCardDto.listId}' not found`,
+      );
+    }
   }
 
   @Get('findCards')
@@ -43,7 +49,7 @@ export class CardController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   findAll(@Req() req) {
-    return this.cardService.findAll(+req.user.id)
+    return this.cardService.findAll(+req.user.id);
   }
 
   @Get(':id')
@@ -51,8 +57,14 @@ export class CardController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Card not found' })
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.cardService.findOne(+id, +req.user.id)
+  async findOne(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.cardService.findOne(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `Card with ID '${id}' not found in yours cards`,
+      );
+    }
   }
 
   @Patch(':id')
@@ -60,12 +72,18 @@ export class CardController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Card not found' })
   @UseGuards(JwtAuthGuard)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateCardDto: UpdateCardDto,
     @Req() req,
   ) {
-    return this.cardService.update(+id, updateCardDto, +req.user.id)
+    try {
+      return await this.cardService.update(+id, updateCardDto, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `Card with ID '${id}' not found in yours cards`,
+      );
+    }
   }
 
   @Delete(':id')
@@ -73,7 +91,13 @@ export class CardController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Card not found' })
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string, @Req() req) {
-    return this.cardService.remove(+id, +req.user.id)
+  async remove(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.cardService.remove(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `Card with ID '${id}' not found in yours cards`,
+      );
+    }
   }
 }

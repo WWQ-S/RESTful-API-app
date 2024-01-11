@@ -38,17 +38,17 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => list_entity_1.List, (list) => list.user_id),
+    (0, typeorm_1.OneToMany)(() => list_entity_1.List, (list) => list.user),
     __metadata("design:type", Array)
-], User.prototype, "list_id", void 0);
+], User.prototype, "lists", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.user_id),
+    (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.user),
     __metadata("design:type", Array)
-], User.prototype, "comment_id", void 0);
+], User.prototype, "comments", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => card_entity_1.Card, (card) => card.user_id),
+    (0, typeorm_1.OneToMany)(() => card_entity_1.Card, (card) => card.user),
     __metadata("design:type", Array)
-], User.prototype, "card_id", void 0);
+], User.prototype, "cards", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

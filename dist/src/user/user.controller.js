@@ -23,14 +23,32 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    create(createUserDto) {
-        return this.userService.create(createUserDto);
+    async create(createUserDto) {
+        try {
+            return await this.userService.create(createUserDto);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`This email address is already registered`);
+        }
     }
-    findOne(id) {
-        return this.userService.findOne(+id);
+    findAll() {
+        return this.userService.findAll();
     }
-    delete(id, req) {
-        return this.userService.removeUser(+id, req.user);
+    async findOne(id) {
+        try {
+            return await this.userService.findOne(id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`User with ID '${id}' not found`);
+        }
+    }
+    async delete(id, req) {
+        try {
+            return await this.userService.removeUser(id, +req.user.id);
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`User with ID '${id}' not found`);
+        }
     }
     update(id, updateUserDto, req) {
         return this.userService.updateDataUser(+id, updateUserDto, req.user);
@@ -66,33 +84,45 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('findAll'),
+    (0, swagger_1.ApiOkResponse)({ description: 'User received' }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOkResponse)({ description: 'User received' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'User not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, swagger_1.ApiOkResponse)({ description: 'User deleted' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'User not found' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "delete", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, swagger_1.ApiOkResponse)({ description: 'User upadated' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
+    (0, swagger_1.ApiNotFoundResponse)({ description: 'User not found' }),
     (0, swagger_1.ApiResponse)({
         status: 400,
         schema: {

@@ -9,20 +9,20 @@ import {
   UseGuards,
   Req,
   UsePipes,
-} from '@nestjs/common'
-import { CommentService } from './comment.service'
-import { CreateCommentDto } from './dto/create-comment.dto'
-import { UpdateCommentDto } from './dto/update-comment.dto'
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard'
+  NotFoundException,
+} from '@nestjs/common';
+import { CommentService } from './comment.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import {
   ApiCreatedResponse,
-  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 
 @ApiTags('Comment')
 @Controller('comment')
@@ -34,8 +34,14 @@ export class CommentController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(LocalAuthGuard)
-  create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
-    return this.commentService.create(createCommentDto, +req.user.id)
+  async create(@Body() createCommentDto: CreateCommentDto, @Req() req) {
+    try {
+      return await this.commentService.create(createCommentDto, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(
+        `Card with ID "${createCommentDto.cardId}" not found`,
+      );
+    }
   }
 
   @Get('findComments')
@@ -43,20 +49,20 @@ export class CommentController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   findAll(@Req() req) {
-    return this.commentService.findAll(+req.user.id)
+    return this.commentService.findAll(+req.user.id);
   }
 
   @Get(':id')
   @ApiOkResponse({ description: 'User comment received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Comment not found' })
-  @ApiHeader({
-    name: 'id',
-    description: 'id of comment',
-  })
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.commentService.findOne(+id, +req.user.id)
+  async findOne(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.commentService.findOne(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(`Comment with ID '${id}' not found`);
+    }
   }
 
   @Patch(':id')
@@ -64,12 +70,20 @@ export class CommentController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Comment not found' })
   @UseGuards(JwtAuthGuard)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateCommentDto: UpdateCommentDto,
     @Req() req,
   ) {
-    return this.commentService.update(+id, updateCommentDto, +req.user.id)
+    try {
+      return await this.commentService.update(
+        +id,
+        updateCommentDto,
+        +req.user.id,
+      );
+    } catch (error) {
+      throw new NotFoundException(`Comment with ID '${id}' not found`);
+    }
   }
 
   @Delete(':id')
@@ -77,7 +91,11 @@ export class CommentController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'Comment not found' })
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string, @Req() req) {
-    return this.commentService.remove(+id, +req.user.id)
+  async remove(@Param('id') id: string, @Req() req) {
+    try {
+      return await this.commentService.remove(+id, +req.user.id);
+    } catch (error) {
+      throw new NotFoundException(`Comment with ID '${id}' not found`);
+    }
   }
 }

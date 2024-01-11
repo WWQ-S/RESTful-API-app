@@ -6,10 +6,8 @@ export declare class CommentController {
     constructor(commentService: CommentService);
     create(createCommentDto: CreateCommentDto, req: any): Promise<{
         body: string;
-        card_id: import("../card/entities/card.entity").Card;
-        user_id: {
-            id: number;
-        };
+        cardId: number;
+        userId: number;
     } & import("./entities/comment.entity").Comment>;
     findAll(req: any): Promise<import("./entities/comment.entity").Comment[]>;
     findOne(id: string, req: any): Promise<import("./entities/comment.entity").Comment>;

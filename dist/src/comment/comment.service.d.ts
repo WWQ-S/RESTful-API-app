@@ -9,14 +9,12 @@ export declare class CommentService {
     constructor(commentRepository: Repository<Comment>, cardService: CardService);
     create(createCommentDto: CreateCommentDto, user_id: number): Promise<{
         body: string;
-        card_id: import("../card/entities/card.entity").Card;
-        user_id: {
-            id: number;
-        };
+        cardId: number;
+        userId: number;
     } & Comment>;
-    findAll(user_id: number): Promise<Comment[]>;
-    findOne(id: number, user_id: number): Promise<Comment>;
-    update(id: number, updateCommentDto: UpdateCommentDto, user_id: number): Promise<import("typeorm").UpdateResult>;
-    remove(id: number, user_id: number): Promise<string>;
-    ifExist(id: number, user_id: number): Promise<Comment>;
+    findAll(userId: number): Promise<Comment[]>;
+    findOne(id: number, userId: number): Promise<Comment>;
+    update(id: number, updateCommentDto: UpdateCommentDto, userId: number): Promise<import("typeorm").UpdateResult>;
+    remove(id: number, userId: number): Promise<string>;
+    checkComment(id: number, userId: number): Promise<Comment>;
 }

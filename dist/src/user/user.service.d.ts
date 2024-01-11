@@ -6,15 +6,14 @@ export declare class UserService {
     private usersRepository;
     constructor(usersRepository: Repository<User>);
     create(createUserDto: CreateUserDto): Promise<{
-        user: {
-            email: string;
-            password: string;
-            firstName: string;
-            lastName: string;
-        } & User;
-    }>;
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+    } & User>;
     findOne(id: number): Promise<User>;
+    findAll(): Promise<User[]>;
     findUserForLogin(email: string): Promise<User>;
-    removeUser(id: number, user: User): Promise<string>;
+    removeUser(id: number, userId: number): Promise<string>;
     updateDataUser(id: number, updateUserDto: UpdateUserDto, user: User): Promise<string>;
 }

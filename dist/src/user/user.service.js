@@ -23,49 +23,63 @@ let UserService = class UserService {
         this.usersRepository = usersRepository;
     }
     async create(createUserDto) {
-        const isExistUser = await this.usersRepository.findOne({
+        const checkUser = await this.usersRepository.findOne({
             where: {
                 email: createUserDto.email,
             },
         });
-        if (isExistUser)
+        if (checkUser)
             throw new common_1.BadRequestException('This email already exist');
-        const user = await this.usersRepository.save({
+        return await this.usersRepository.save({
             email: createUserDto.email,
             password: await argon2.hash(createUserDto.password),
             firstName: createUserDto.firstName,
             lastName: createUserDto.lastName,
         });
-        return { user };
     }
     async findOne(id) {
-        const oneUser = await this.usersRepository.findOne({
+        return await this.usersRepository.findOneOrFail({
             where: {
                 id,
             },
         });
-        return oneUser;
+    }
+    async findAll() {
+        return await this.usersRepository.find();
     }
     async findUserForLogin(email) {
-        const oneUser = await this.usersRepository.findOne({
+        return await this.usersRepository.findOne({
             where: {
                 email,
             },
         });
-        return oneUser;
     }
-    async removeUser(id, user) {
-        if (id === user.id)
+    async removeUser(id, userId) {
+        const user = await this.usersRepository.findOneOrFail({
+            where: {
+                id,
+            },
+        });
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        if ((id = userId))
             await this.usersRepository.delete(id);
         else
-            return 'You are not owner of this account';
-        return `Your account "${user.email}" has been deleted`;
+            throw new common_1.UnauthorizedException('You are not owner of this account');
+        return `Your account with ID '${id}' has been deleted`;
     }
     async updateDataUser(id, updateUserDto, user) {
-        if (id === user.id)
+        const userObj = await this.usersRepository.findOneOrFail({
+            where: {
+                id,
+            },
+        });
+        if (!userObj)
+            throw new common_1.NotFoundException('User not found');
+        if ((id = user.id))
             await this.usersRepository.update(id, updateUserDto);
         else
-            return 'You are not owner of this account';
+            throw new common_1.UnauthorizedException('You are not owner of this account');
         return `Your account "${user.email}" has been updated`;
     }
 };
