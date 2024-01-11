@@ -1,14 +1,12 @@
-import { DynamicModule, Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { UserModule } from './user/user.module'
-import { ListModule } from './list/list.module'
-import { CardModule } from './card/card.module'
-import { CommentModule } from './comment/comment.module'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { typeOrmAsyncConfig } from 'config/typeOrmAsyncConfig'
-import { User } from './user/entities/user.entity'
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { ListModule } from './list/list.module';
+import { CardModule } from './card/card.module';
+import { CommentModule } from './comment/comment.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
 @Module({

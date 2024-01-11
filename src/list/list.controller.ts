@@ -43,7 +43,7 @@ export class ListController {
     }
   }
 
-  @Get('find')
+  @Get()
   @ApiOkResponse({ description: 'Lists received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)

@@ -76,7 +76,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ListController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)('find'),
+    (0, common_1.Get)(),
     (0, swagger_1.ApiOkResponse)({ description: 'Lists received' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

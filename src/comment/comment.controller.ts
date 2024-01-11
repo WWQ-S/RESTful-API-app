@@ -44,7 +44,7 @@ export class CommentController {
     }
   }
 
-  @Get('findComments')
+  @Get()
   @ApiOkResponse({ description: 'User comments received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)

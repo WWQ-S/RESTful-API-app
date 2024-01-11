@@ -44,7 +44,7 @@ export class CardController {
     }
   }
 
-  @Get('findCards')
+  @Get()
   @ApiOkResponse({ description: 'User cards received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)

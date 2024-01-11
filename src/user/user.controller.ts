@@ -62,7 +62,7 @@ export class UserController {
     }
   }
 
-  @Get('findAll')
+  @Get()
   @ApiOkResponse({ description: 'User received' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)

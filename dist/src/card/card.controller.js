@@ -73,7 +73,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CardController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)('findCards'),
+    (0, common_1.Get)(),
     (0, swagger_1.ApiOkResponse)({ description: 'User cards received' }),
     (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
