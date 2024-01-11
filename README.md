@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+Структура БД - https://dbdiagram.io/d/659fea9bac844320aeb7c3ef
+
 ## Installation
 
 ```bash
